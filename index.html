@@ -528,37 +528,46 @@
         <span class="sparkle">✨</span>
       </div>
     </div>
-    <audio id="bgMusic" autoplay loop>
+    <audio id="bgMusic" autoplay loop muted playsinline>
       <source src="Dreamer.mp3" type="audio/mpeg" />
     </audio>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-      // Audio autoplay handling
       const bgMusic = document.getElementById("bgMusic");
+      bgMusic.volume = 0.0;
 
-      // Try to play audio on page load
-      window.addEventListener("load", () => {
+      function fadeTo(targetVolume, duration = 1000) {
+        const start = bgMusic.volume;
+        const startTime = performance.now();
+        function step(now) {
+          const t = Math.min(1, (now - startTime) / duration);
+          bgMusic.volume = start + (targetVolume - start) * t;
+          if (t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      window.addEventListener("load", async () => {
         try {
-          bgMusic.play().catch(function (error) {
-            console.log("Audio autoplay prevented");
-          });
+          // Thử phát ngay (muted ban đầu giúp tránh bị chặn)
+          await bgMusic.play();
+          // Thử unmute & fade-in — nếu bị chặn, sẽ rơi vào catch
+          bgMusic.muted = false;
+          fadeTo(0.6, 1500); // chế độ âm lượng mong muốn
         } catch (err) {
-          console.log("Audio autoplay error:", err);
+          // Nếu trình duyệt chặn unmute, giữ muted và phát im lặng,
+          // sau đó chờ tương tác của người dùng để unmute và fade-in.
+          bgMusic.muted = true;
+          bgMusic.play().catch(() => {});
+          const enableSound = () => {
+            bgMusic.muted = false;
+            fadeTo(0.6, 800);
+            document.removeEventListener("click", enableSound);
+            document.removeEventListener("keydown", enableSound);
+          };
+          document.addEventListener("click", enableSound, { once: true });
+          document.addEventListener("keydown", enableSound, { once: true });
         }
       });
-
-      // Play audio on first user interaction with the page
-      document.addEventListener(
-        "click",
-        () => {
-          try {
-            bgMusic.play();
-          } catch (err) {
-            console.log("Audio play error:", err);
-          }
-        },
-        { once: true }
-      );
     </script>
     <script>
       // Star particle effect

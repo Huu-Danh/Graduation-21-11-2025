@@ -502,7 +502,7 @@
           <div class="detail-text">
             <div class="detail-label">Thời gian</div>
             <div class="detail-value">
-              07:30 AM - 10:00 AM • Thứ 6, 21/11/2025
+              12:30 PM - 17:00 PM • Thứ 2, 24/11/2025
             </div>
           </div>
         </div>
@@ -528,46 +528,58 @@
         <span class="sparkle">✨</span>
       </div>
     </div>
-    <audio id="bgMusic" autoplay loop muted playsinline>
+    <audio id="bgMusic" autoplay loop>
       <source src="Dreamer.mp3" type="audio/mpeg" />
     </audio>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
+      // Audio autoplay handling
       const bgMusic = document.getElementById("bgMusic");
-      bgMusic.volume = 0.0;
 
-      function fadeTo(targetVolume, duration = 1000) {
-        const start = bgMusic.volume;
-        const startTime = performance.now();
-        function step(now) {
-          const t = Math.min(1, (now - startTime) / duration);
-          bgMusic.volume = start + (targetVolume - start) * t;
-          if (t < 1) requestAnimationFrame(step);
+      // Function to attempt playing audio
+      function tryPlayAudio() {
+        const playPromise = bgMusic.play();
+
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              // Auto-play started successfully
+              console.log("Audio started automatically");
+            })
+            .catch((error) => {
+              // Auto-play was prevented
+              console.log("Audio autoplay prevented:", error);
+              // Try playing at low volume first
+              bgMusic.volume = 0.1;
+              bgMusic
+                .play()
+                .then(() => {
+                  // Gradually increase volume
+                  let vol = 0.1;
+                  const interval = setInterval(() => {
+                    if (vol < 1) {
+                      vol += 0.1;
+                      bgMusic.volume = vol;
+                    } else {
+                      clearInterval(interval);
+                    }
+                  }, 200);
+                })
+                .catch((err) => console.log("Audio play failed:", err));
+            });
         }
-        requestAnimationFrame(step);
       }
 
-      window.addEventListener("load", async () => {
-        try {
-          // Thử phát ngay (muted ban đầu giúp tránh bị chặn)
-          await bgMusic.play();
-          // Thử unmute & fade-in — nếu bị chặn, sẽ rơi vào catch
-          bgMusic.muted = false;
-          fadeTo(0.6, 1500); // chế độ âm lượng mong muốn
-        } catch (err) {
-          // Nếu trình duyệt chặn unmute, giữ muted và phát im lặng,
-          // sau đó chờ tương tác của người dùng để unmute và fade-in.
-          bgMusic.muted = true;
-          bgMusic.play().catch(() => {});
-          const enableSound = () => {
-            bgMusic.muted = false;
-            fadeTo(0.6, 800);
-            document.removeEventListener("click", enableSound);
-            document.removeEventListener("keydown", enableSound);
-          };
-          document.addEventListener("click", enableSound, { once: true });
-          document.addEventListener("keydown", enableSound, { once: true });
-        }
-      });
+      // Try to play immediately when document is loaded
+      document.addEventListener("DOMContentLoaded", tryPlayAudio);
+
+      // Try to play when window loads
+      window.addEventListener("load", tryPlayAudio);
+
+      // Fallback: play on first user interaction
+      document.addEventListener("click", tryPlayAudio, { once: true });
+      document.addEventListener("touchstart", tryPlayAudio, { once: true });
+      document.addEventListener("keydown", tryPlayAudio, { once: true });
     </script>
     <script>
       // Star particle effect

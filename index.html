@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thiệp Mời Tốt Nghiệp</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;600&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        overflow: hidden;
+        background: #0a0e27;
+      }
+
+      #canvas-container {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+      }
+
+      #info-panel {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        padding: 15px;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        text-align: center;
+        width: 70%;
+        max-width: 350px;
+        z-index: 10;
+      }
+
+      .top-decoration {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+
+      .line {
+        width: 80px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #ffd700, transparent);
+      }
+
+      .cap-icon {
+        font-size: 3.5em;
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      h1 {
+        font-family: "Playfair Display", serif;
+        color: #ffffff;
+        font-size: 1.8em;
+        font-weight: 900;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        background: linear-gradient(135deg, #fff 0%, #ffd700 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+      }
+
+      .subtitle {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.8em;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 30px;
+        font-weight: 300;
+      }
+
+      .graduate-name {
+        font-family: "Playfair Display", serif;
+        background: linear-gradient(
+          135deg,
+          #ffd700 0%,
+          #ffed4e 50%,
+          #ffd700 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1.6em;
+        margin: 25px 0;
+        font-weight: 700;
+        letter-spacing: 2px;
+        animation: shimmer 3s ease-in-out infinite;
+        text-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
+      }
+
+      @keyframes shimmer {
+        0%,
+        100% {
+          filter: brightness(1);
+        }
+        50% {
+          filter: brightness(1.3);
+        }
+      }
+
+      .divider {
+        width: 60%;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 215, 0, 0.5),
+          transparent
+        );
+        margin: 12px auto;
+      }
+
+      .details {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.85em;
+        margin: 20px auto;
+        font-weight: 300;
+        width: 90%;
+        max-width: 318px;
+      }
+
+      .detail-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 12px;
+        margin: 15px 0;
+        text-align: left;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        backdrop-filter: blur(5px);
+      }
+
+      .detail-icon {
+        font-size: 1.4em;
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        padding-top: 3px;
+      }
+
+      .detail-text {
+        flex: 1;
+      }
+
+      .detail-label {
+        font-size: 0.8em;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+      }
+
+      .detail-value {
+        color: #fff;
+        font-weight: 400;
+        line-height: 1.4;
+      }
+
+      .detail-value small {
+        display: block;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9em;
+        margin-top: 4px;
+      }
+
+      .invitation-text {
+        margin-top: 15px;
+        font-style: italic;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.85em;
+        line-height: 1.8;
+        font-weight: 300;
+      }
+
+      .sparkle {
+        display: inline-block;
+        color: #ffd700;
+        animation: sparkle 2s ease-in-out infinite;
+      }
+
+      /* --- Thêm đoạn CSS cho text animation --- */
+      .invitation-text {
+        position: relative;
+        min-height: 68px; /* đảm bảo không bị cắt */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        z-index: 12;
+        pointer-events: none;
+      }
+
+      .invitation-line {
+        display: inline-block;
+        font-style: italic;
+        font-weight: 400;
+        font-size: 0.95em;
+        line-height: 1.4;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.3, 1),
+          transform 0.9s cubic-bezier(0.2, 0.9, 0.3, 1);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        text-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+      }
+
+      .invitation-line.enter {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .invitation-line.exit {
+        opacity: 0;
+        transform: translateY(-10px);
+        transition-duration: 0.8s;
+      }
+
+      /* shimmering gold gradient */
+      .invitation-line.shimmer {
+        background-image: linear-gradient(
+          90deg,
+          #ffd700 0%,
+          #fff8d0 45%,
+          #ffd700 100%
+        );
+        background-size: 200% 100%;
+        animation: shimmerText 2.4s linear infinite;
+        text-shadow: 0 6px 20px rgba(255, 200, 50, 0.12),
+          0 2px 6px rgba(0, 0, 0, 0.6);
+      }
+
+      @keyframes shimmerText {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .instructions {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85em;
+        z-index: 10;
+        display: flex;
+        gap: 30px;
+        align-items: center;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px 30px;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .instruction-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+
+      #info-panel {
+        animation: fadeInScale 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .particle-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 5;
+      }
+
+      /* Desktop lớn */
+      @media screen and (min-width: 1200px) {
+        #info-panel {
+          padding: 40px;
+          max-width: 600px;
+        }
+
+        h1 {
+          font-size: 2.8em;
+        }
+        .graduate-name {
+          font-size: 2.5em;
+        }
+        .details {
+          font-size: 1.05em;
+        }
+      }
+
+      /* Tablet & Desktop nhỏ */
+      @media screen and (min-width: 768px) and (max-width: 1199px) {
+        #info-panel {
+          padding: 30px;
+          max-width: 500px;
+        }
+
+        h1 {
+          font-size: 2.4em;
+        }
+        .graduate-name {
+          font-size: 2.2em;
+        }
+        .details {
+          font-size: 1em;
+        }
+      }
+
+      /* Tablet nhỏ */
+      @media screen and (min-width: 480px) and (max-width: 767px) {
+        #info-panel {
+          padding: 25px;
+          max-width: 440px;
+        }
+
+        h1 {
+          font-size: 2em;
+        }
+        .graduate-name {
+          font-size: 1.8em;
+        }
+        .subtitle {
+          font-size: 0.8em;
+        }
+        .details {
+          font-size: 0.9em;
+        }
+        .detail-item {
+          gap: 10px;
+        }
+        .invitation-text {
+          font-size: 0.9em;
+        }
+      }
+
+      /* Mobile */
+      @media screen and (max-width: 479px) {
+        #info-panel {
+          padding: 20px;
+          width: 95%;
+        }
+
+        h1 {
+          font-size: 1.8em;
+        }
+        .graduate-name {
+          font-size: 1.6em;
+        }
+        .subtitle {
+          font-size: 0.75em;
+        }
+        .details {
+          font-size: 0.85em;
+        }
+        .detail-item {
+          gap: 8px;
+          margin: 10px 0;
+        }
+        .detail-icon {
+          font-size: 1.1em;
+        }
+        .invitation-text {
+          font-size: 0.85em;
+          margin-top: 20px;
+        }
+        .divider {
+          margin: 15px auto;
+        }
+      }
+
+      /* Màn hình thấp */
+      @media screen and (max-height: 700px) {
+        #info-panel {
+          padding: 15px;
+        }
+
+        .detail-item {
+          margin: 8px 0;
+        }
+        .divider {
+          margin: 12px auto;
+        }
+        .invitation-text {
+          margin-top: 15px;
+        }
+      }
+
+      /* Media query cho màn hình thấp */
+      @media screen and (max-height: 600px) {
+        #info-panel {
+          padding: 12px;
+          max-width: 488px;
+        }
+
+        h1 {
+          font-size: 1.6em;
+        }
+        .graduate-name {
+          font-size: 2em;
+        }
+        .subtitle {
+          font-size: 0.75em;
+        }
+        .details {
+          font-size: 0.8em;
+        }
+        .invitation-text {
+          font-size: 0.8em;
+        }
+
+        .detail-item {
+          margin: 6px 0;
+        }
+        .divider {
+          margin: 10px auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+    <canvas class="particle-overlay" id="particles"></canvas>
+
+    <div id="info-panel">
+      <div class="top-decoration">
+        <div class="line"></div>
+        <div class="cap-icon">🎓</div>
+        <div class="line"></div>
+      </div>
+
+      <h1>Lễ Tốt Nghiệp</h1>
+      <div class="subtitle">Graduation Ceremony 2025</div>
+
+      <div class="graduate-name">Nguyễn Tấn Hữu Danh</div>
+
+      <div class="divider"></div>
+
+      <div class="details">
+        <div class="detail-item">
+          <span class="detail-icon">📚</span>
+          <div class="detail-text">
+            <div class="detail-label">Chuyên ngành</div>
+            <div class="detail-value">Công Nghệ Phần Mềm</div>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-icon">📅</span>
+          <div class="detail-text">
+            <div class="detail-label">Thời gian</div>
+            <div class="detail-value">
+              07:30 AM - 10:00 AM • Thứ 6, 21/11/2025
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-icon">📍</span>
+          <div class="detail-text">
+            <div class="detail-label">Địa điểm</div>
+            <div class="detail-value">
+              Trường ĐH Công Thương TP.HCM
+              <br />
+              <small>140 Lê Trọng Tấn, P. Tây Thạnh, TP. HCM</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="invitation-text">
+        <span class="sparkle">✨</span> Rất vui khi có sự hiện diện của bạn
+        trong buổi lễ tốt nghiệp của tôi
+        <span class="sparkle">✨</span>
+      </div>
+    </div>
+    <audio id="bgMusic" autoplay loop>
+      <source src="Dreamer.mp3" type="audio/mpeg" />
+    </audio>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+      // Audio autoplay handling
+      const bgMusic = document.getElementById("bgMusic");
+
+      // Try to play audio on page load
+      window.addEventListener("load", () => {
+        try {
+          bgMusic.play().catch(function (error) {
+            console.log("Audio autoplay prevented");
+          });
+        } catch (err) {
+          console.log("Audio autoplay error:", err);
+        }
+      });
+
+      // Play audio on first user interaction with the page
+      document.addEventListener(
+        "click",
+        () => {
+          try {
+            bgMusic.play();
+          } catch (err) {
+            console.log("Audio play error:", err);
+          }
+        },
+        { once: true }
+      );
+    </script>
+    <script>
+      // Star particle effect
+      const particleCanvas = document.getElementById("particles");
+      const pCtx = particleCanvas.getContext("2d");
+      particleCanvas.width = window.innerWidth;
+      particleCanvas.height = window.innerHeight;
+
+      const particles2D = [];
+      const particleCount = 100; // Tăng số lượng particles
+
+      // Tạo các ngôi sao với nhiều kích thước và tốc độ khác nhau
+      for (let i = 0; i < particleCount; i++) {
+        particles2D.push({
+          x: Math.random() * particleCanvas.width,
+          y: Math.random() * particleCanvas.height,
+          size: Math.random() * 3 + 1, // Kích thước đa dạng
+          speedX: (Math.random() - 0.5) * 0.8, // Tốc độ di chuyển ngang
+          speedY: (Math.random() - 0.5) * 0.8, // Tốc độ di chuyển dọc
+          opacity: Math.random() * 0.5 + 0.3,
+          rotation: Math.random() * Math.PI * 2, // Góc xoay
+          rotationSpeed: (Math.random() - 0.5) * 0.02, // Tốc độ xoay
+          twinkleSpeed: 0.03 + Math.random() * 0.03, // Tốc độ nhấp nháy
+          twinklePhase: Math.random() * Math.PI * 2, // Pha nhấp nháy
+        });
+      }
+
+      // Vẽ ngôi sao
+      function drawStar(ctx, x, y, size, rotation, opacity) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rotation);
+        ctx.beginPath();
+
+        // Vẽ ngôi sao 5 cánh
+        for (let i = 0; i < 5; i++) {
+          const angle = (i * Math.PI * 2) / 5 - Math.PI / 2;
+          const innerAngle = angle + Math.PI / 5;
+
+          if (i === 0) {
+            ctx.moveTo(Math.cos(angle) * size, Math.sin(angle) * size);
+          } else {
+            ctx.lineTo(Math.cos(angle) * size, Math.sin(angle) * size);
+          }
+
+          // Thêm điểm bên trong để tạo hình sao
+          ctx.lineTo(
+            Math.cos(innerAngle) * (size / 2),
+            Math.sin(innerAngle) * (size / 2)
+          );
+        }
+
+        ctx.closePath();
+
+        // Tạo gradient cho ngôi sao
+        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, size);
+        gradient.addColorStop(0, `rgba(255, 255, 200, ${opacity})`);
+        gradient.addColorStop(0.5, `rgba(255, 215, 0, ${opacity * 0.8})`);
+        gradient.addColorStop(1, `rgba(255, 140, 0, 0)`);
+
+        ctx.fillStyle = gradient;
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      function animateParticles() {
+        pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+
+        const time = Date.now() / 1000;
+
+        particles2D.forEach((p) => {
+          // Cập nhật vị trí
+          p.x += p.speedX;
+          p.y += p.speedY;
+
+          // Xoay ngôi sao
+          p.rotation += p.rotationSpeed;
+
+          // Hiệu ứng nhấp nháy
+          const twinkle = Math.sin(time * p.twinkleSpeed + p.twinklePhase);
+          const currentOpacity = p.opacity * (0.7 + 0.3 * twinkle);
+
+          // Vẽ ngôi sao
+          drawStar(pCtx, p.x, p.y, p.size, p.rotation, currentOpacity);
+
+          // Xử lý khi ngôi sao ra khỏi màn hình
+          if (p.x < -p.size) p.x = particleCanvas.width + p.size;
+          if (p.x > particleCanvas.width + p.size) p.x = -p.size;
+          if (p.y < -p.size) p.y = particleCanvas.height + p.size;
+          if (p.y > particleCanvas.height + p.size) p.y = -p.size;
+        });
+
+        requestAnimationFrame(animateParticles);
+      }
+
+      animateParticles();
+
+      // Three.js Scene
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x0a0e27, 0.05);
+
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+      });
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x0a0e27, 1);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      document
+        .getElementById("canvas-container")
+        .appendChild(renderer.domElement);
+
+      // Advanced Lighting
+      const ambientLight = new THREE.AmbientLight(0x4a5fd9, 0.4);
+      scene.add(ambientLight);
+
+      const spotLight1 = new THREE.SpotLight(0xffd700, 1.5);
+      spotLight1.position.set(15, 20, 10);
+      spotLight1.castShadow = true;
+      spotLight1.angle = Math.PI / 6;
+      spotLight1.penumbra = 0.3;
+      scene.add(spotLight1);
+
+      const spotLight2 = new THREE.SpotLight(0x4a90e2, 1);
+      spotLight2.position.set(-15, 15, 10);
+      spotLight2.castShadow = true;
+      scene.add(spotLight2);
+
+      const pointLight = new THREE.PointLight(0xff69b4, 0.8, 50);
+      pointLight.position.set(0, 10, 5);
+      scene.add(pointLight);
+
+      // Create modern graduation cap with metallic finish
+      function createModernGraduationCap() {
+        const group = new THREE.Group();
+
+        // Base board with beveled edges
+        const baseShape = new THREE.Shape();
+        const size = 2.5;
+        baseShape.moveTo(-size / 2, -size / 2);
+        baseShape.lineTo(size / 2, -size / 2);
+        baseShape.lineTo(size / 2, size / 2);
+        baseShape.lineTo(-size / 2, size / 2);
+        baseShape.lineTo(-size / 2, -size / 2);
+
+        const extrudeSettings = {
+          depth: 0.15,
+          bevelEnabled: true,
+          bevelThickness: 0.05,
+          bevelSize: 0.05,
+          bevelSegments: 3,
+        };
+
+        // Thay đổi baseMaterial cho phần đế nón
+        const baseMaterial = new THREE.MeshStandardMaterial({
+          color: 0x000000, // Đổi thành màu đen
+          metalness: 0.8,
+          roughness: 0.2,
+          emissive: 0xffd700, // Thêm ánh vàng
+          emissiveIntensity: 0.4,
+        });
+
+        const baseGeometry = new THREE.ExtrudeGeometry(
+          baseShape,
+          extrudeSettings
+        );
+        const base = new THREE.Mesh(baseGeometry, baseMaterial);
+        base.rotation.x = -Math.PI / 2;
+        base.position.y = 0.075;
+        base.castShadow = true;
+        group.add(base);
+
+        // Multiple gold trim layers
+        for (let i = 0; i < 3; i++) {
+          const trimGeometry = new THREE.TorusGeometry(
+            1.3 - i * 0.15,
+            0.04,
+            8,
+            64
+          );
+
+          // Thay đổi màu cho viền vàng (trim) để nổi bật hơn
+          const trimMaterial = new THREE.MeshStandardMaterial({
+            color: 0xffd700,
+            metalness: 1,
+            roughness: 0.1,
+            emissive: 0xffd700,
+            emissiveIntensity: 0.8, // Tăng độ sáng
+          });
+          const trim = new THREE.Mesh(trimGeometry, trimMaterial);
+          trim.rotation.x = Math.PI / 2;
+          trim.position.y = 0.15 + i * 0.02;
+          group.add(trim);
+        }
+
+        // Cap with segments
+        const capGeometry = new THREE.CylinderGeometry(1.1, 1.15, 1, 32, 5);
+
+        // Thay đổi capMaterial cho phần thân nón
+        const capMaterial = new THREE.MeshStandardMaterial({
+          color: 0x000000, // Đổi thành màu đen
+          metalness: 0.9,
+          roughness: 0.2,
+          emissive: 0xffd700, // Thêm ánh vàng
+          emissiveIntensity: 0.3,
+        });
+        const cap = new THREE.Mesh(capGeometry, capMaterial);
+        cap.position.y = -0.5;
+        cap.castShadow = true;
+        group.add(cap);
+
+        // Gold button on top
+        const buttonGeometry = new THREE.CylinderGeometry(0.15, 0.15, 0.1, 32);
+
+        // Thay đổi màu nút trên đỉnh nón
+        const buttonMaterial = new THREE.MeshStandardMaterial({
+          color: 0xffd700,
+          metalness: 1,
+          roughness: 0.05,
+          emissive: 0xffd700,
+          emissiveIntensity: 0.8, // Tăng độ sáng
+        });
+        const button = new THREE.Mesh(buttonGeometry, buttonMaterial);
+        button.position.y = 0.2;
+        group.add(button);
+
+        // Tassel with multiple strands
+        const tasselGroup = new THREE.Group();
+
+        // Main tassel cord
+        const mainCordGeometry = new THREE.CylinderGeometry(0.04, 0.02, 1.8, 8);
+        const cordMaterial = new THREE.MeshStandardMaterial({
+          color: 0xffd700,
+          metalness: 0.9,
+          roughness: 0.1,
+          emissive: 0xffd700,
+          emissiveIntensity: 0.4,
+        });
+        const mainCord = new THREE.Mesh(mainCordGeometry, cordMaterial);
+        mainCord.position.y = 1.1;
+        tasselGroup.add(mainCord);
+
+        // Tassel head (decorative knot)
+        const knotGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+        const knot = new THREE.Mesh(knotGeometry, cordMaterial);
+        knot.position.y = 2;
+        knot.scale.set(1, 1.3, 1);
+        tasselGroup.add(knot);
+
+        // Tassel strands
+        for (let i = 0; i < 8; i++) {
+          const angle = (i / 8) * Math.PI * 2;
+          const strandGeometry = new THREE.CylinderGeometry(
+            0.015,
+            0.005,
+            0.6,
+            6
+          );
+          const strand = new THREE.Mesh(strandGeometry, cordMaterial);
+          strand.position.x = Math.cos(angle) * 0.12;
+          strand.position.z = Math.sin(angle) * 0.12;
+          strand.position.y = 1.7;
+          strand.rotation.z = Math.sin(angle) * 0.2;
+          strand.rotation.x = Math.cos(angle) * 0.2;
+          tasselGroup.add(strand);
+        }
+
+        group.add(tasselGroup);
+
+        return group;
+      }
+
+      // Create luxurious diploma
+      function createLuxuryDiploma() {
+        const group = new THREE.Group();
+
+        // Parchment paper với hiệu ứng ánh vàng
+        const scrollGeometry = new THREE.CylinderGeometry(
+          0.3,
+          0.3,
+          3.5,
+          64,
+          10
+        );
+        const scrollMaterial = new THREE.MeshStandardMaterial({
+          color: 0xfff8e7,
+          metalness: 0.1,
+          roughness: 0.6,
+          envMapIntensity: 1.5,
+          emissive: 0xffd700,
+          emissiveIntensity: 0.05,
+        });
+        const scroll = new THREE.Mesh(scrollGeometry, scrollMaterial);
+        scroll.rotation.z = Math.PI / 2;
+        scroll.castShadow = true;
+        group.add(scroll);
+
+        // Tạo các đường viền trang trí dọc giấy
+        const borderGroup = new THREE.Group();
+        for (let i = 0; i < 6; i++) {
+          const angle = (i / 6) * Math.PI * 2;
+          const borderGeometry = new THREE.BoxGeometry(3.5, 0.02, 0.01);
+          const borderMaterial = new THREE.MeshStandardMaterial({
+            color: 0xd4af37,
+            metalness: 0.8,
+            roughness: 0.2,
+            emissive: 0xffd700,
+            emissiveIntensity: 0.2,
+          });
+          const border = new THREE.Mesh(borderGeometry, borderMaterial);
+          border.position.y = 0.31 * Math.cos(angle);
+          border.position.z = 0.31 * Math.sin(angle);
+          borderGroup.add(border);
+        }
+        group.add(borderGroup);
+
+        // Tạo các cuộn giấy hai đầu với hiệu ứng đẹp hơn
+        const createRoll = (position) => {
+          const rollGroup = new THREE.Group();
+
+          // Cuộn chính
+          const mainRollGeometry = new THREE.TorusGeometry(
+            0.3,
+            0.2,
+            32,
+            32,
+            Math.PI
+          );
+          const mainRollMaterial = new THREE.MeshStandardMaterial({
+            color: 0xfff8e7,
+            metalness: 0.1,
+            roughness: 0.7,
+            emissive: 0xffd700,
+            emissiveIntensity: 0.05,
+          });
+          const mainRoll = new THREE.Mesh(mainRollGeometry, mainRollMaterial);
+          mainRoll.rotation.y = Math.PI / 2;
+          rollGroup.add(mainRoll);
+
+          // Thêm chi tiết cuộn bên trong
+          const innerRollGeometry = new THREE.TorusGeometry(
+            0.2,
+            0.1,
+            32,
+            32,
+            Math.PI
+          );
+          const innerRoll = new THREE.Mesh(innerRollGeometry, mainRollMaterial);
+          innerRoll.rotation.y = Math.PI / 2;
+          innerRoll.position.z = 0.1;
+          rollGroup.add(innerRoll);
+
+          rollGroup.position.x = position;
+          return rollGroup;
+        };
+
+        group.add(createRoll(-1.75)); // Cuộn trái
+        group.add(createRoll(1.75)); // Cuộn phải
+
+        // Dải ruy băng sang trọng
+        const ribbonGroup = new THREE.Group();
+
+        // Dải chính
+        const ribbonGeometry = new THREE.CylinderGeometry(0.35, 0.35, 0.3, 32);
+        const ribbonMaterial = new THREE.MeshStandardMaterial({
+          color: 0x800020, // Màu đỏ rượu
+          metalness: 0.6,
+          roughness: 0.3,
+          emissive: 0x800020,
+          emissiveIntensity: 0.2,
+        });
+        const ribbon = new THREE.Mesh(ribbonGeometry, ribbonMaterial);
+        ribbon.rotation.z = Math.PI / 2;
+        ribbonGroup.add(ribbon);
+
+        // Nơ ruy băng
+        const bowSize = 0.4;
+        const bowGeometry = new THREE.TorusGeometry(bowSize, 0.08, 16, 32);
+        const bow1 = new THREE.Mesh(bowGeometry, ribbonMaterial);
+        bow1.position.set(0, 0.2, 0.2);
+        bow1.rotation.x = Math.PI / 3;
+        ribbonGroup.add(bow1);
+
+        const bow2 = new THREE.Mesh(bowGeometry, ribbonMaterial);
+        bow2.position.set(0, 0.2, -0.2);
+        bow2.rotation.x = -Math.PI / 3;
+        ribbonGroup.add(bow2);
+
+        // Con dấu vàng
+        const sealGeometry = new THREE.CylinderGeometry(0.25, 0.25, 0.08, 32);
+        const sealMaterial = new THREE.MeshStandardMaterial({
+          color: 0xffd700,
+          metalness: 0.8,
+          roughness: 0.2,
+          emissive: 0xffd700,
+          emissiveIntensity: 0.3,
+        });
+        const seal = new THREE.Mesh(sealGeometry, sealMaterial);
+        seal.position.set(0.5, 0.3, 0);
+        ribbonGroup.add(seal);
+
+        // Hoa văn trên con dấu
+        const sealDesignGeometry = new THREE.TorusKnotGeometry(
+          0.15,
+          0.03,
+          64,
+          8
+        );
+        const sealDesign = new THREE.Mesh(sealDesignGeometry, sealMaterial);
+        sealDesign.position.set(0.5, 0.35, 0);
+        sealDesign.rotation.x = Math.PI / 2;
+        ribbonGroup.add(sealDesign);
+
+        ribbonGroup.position.x = 0.3;
+        group.add(ribbonGroup);
+
+        return group;
+      }
+
+      // Create floating particles
+      function createFloatingParticles() {
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        const colors = [];
+
+        for (let i = 0; i < 2000; i++) {
+          vertices.push(
+            (Math.random() - 0.5) * 100,
+            (Math.random() - 0.5) * 100,
+            (Math.random() - 0.5) * 100
+          );
+
+          const color = new THREE.Color();
+          color.setHSL(Math.random() * 0.1 + 0.15, 0.8, 0.6);
+          colors.push(color.r, color.g, color.b);
+        }
+
+        geometry.setAttribute(
+          "position",
+          new THREE.Float32BufferAttribute(vertices, 3)
+        );
+        geometry.setAttribute(
+          "color",
+          new THREE.Float32BufferAttribute(colors, 3)
+        );
+
+        const material = new THREE.PointsMaterial({
+          size: 0.15,
+          vertexColors: true,
+          transparent: true,
+          opacity: 0.8,
+          blending: THREE.AdditiveBlending,
+        });
+
+        return new THREE.Points(geometry, material);
+      }
+
+      // Add objects
+      const graduationCap = createModernGraduationCap();
+      graduationCap.position.set(-4, 0, 0);
+      scene.add(graduationCap);
+
+      const diploma = createLuxuryDiploma();
+      diploma.position.set(4, 0, 0);
+      scene.add(diploma);
+
+      const floatingParticles = createFloatingParticles();
+      scene.add(floatingParticles);
+
+      camera.position.z = 10;
+      camera.position.y = 2;
+
+      // Mouse interaction
+      let mouseX = 0;
+      let mouseY = 0;
+      let targetRotationX = 0;
+      let targetRotationY = 0;
+
+      document.addEventListener("mousemove", (event) => {
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+      });
+
+      document.addEventListener("wheel", (event) => {
+        camera.position.z += event.deltaY * 0.01;
+        camera.position.z = Math.max(6, Math.min(20, camera.position.z));
+      });
+
+      // Animation
+      const clock = new THREE.Clock();
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const elapsedTime = clock.getElapsedTime();
+
+        // Smooth rotation for cap
+        graduationCap.rotation.y += 0.008;
+        graduationCap.position.y = Math.sin(elapsedTime * 0.8) * 0.3;
+        graduationCap.rotation.x = Math.sin(elapsedTime * 0.5) * 0.1;
+
+        // Smooth rotation for diploma
+        diploma.rotation.y -= 0.006;
+        diploma.position.y = Math.cos(elapsedTime * 0.8) * 0.3;
+        diploma.rotation.z = Math.cos(elapsedTime * 0.5) * 0.15;
+
+        // Rotate particles
+        floatingParticles.rotation.y += 0.0003;
+        floatingParticles.rotation.x += 0.0002;
+
+        // Animate lights
+        spotLight1.position.x = Math.sin(elapsedTime * 0.5) * 15;
+        spotLight1.position.z = Math.cos(elapsedTime * 0.5) * 15;
+
+        pointLight.position.x = Math.cos(elapsedTime * 0.7) * 8;
+        pointLight.position.z = Math.sin(elapsedTime * 0.7) * 8;
+
+        // Mouse interaction
+        targetRotationX = mouseY * 0.2;
+        targetRotationY = mouseX * 0.2;
+
+        camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
+        camera.position.y += (-mouseY * 2 + 2 - camera.position.y) * 0.02;
+        camera.lookAt(scene.position);
+
+        renderer.render(scene, camera);
+      }
+
+      // Handle resize
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        particleCanvas.width = window.innerWidth;
+        particleCanvas.height = window.innerHeight;
+      });
+
+      animate();
+    </script>
+    <script>
+      // --- Thay thế IIFE hiện tại bằng phiên bản lặp vô hạn ---
+      (function () {
+        const messages = [
+          " ✨ Hãy đến và cùng tôi chia sẻ niềm vui trong ngày lễ tốt nghiệp ✨",
+          "  ✨ Sự hiện diện của bạn là món quà quý giá nhất ✨",
+          " ✨ Cùng nhau tạo nên những kỷ niệm đáng nhớ trong ngày đặc biệt này ✨",
+        ];
+
+        const container = document.querySelector(".invitation-text");
+        if (!container) return;
+
+        let line = container.querySelector(".invitation-line");
+        if (!line) {
+          line = document.createElement("span");
+          line.className = "invitation-line";
+          container.innerHTML = ""; // clear existing
+          container.appendChild(line);
+        }
+
+        function sleep(ms) {
+          return new Promise((res) => setTimeout(res, ms));
+        }
+
+        async function runLoop() {
+          // small initial delay so scene loads first
+          await sleep(500);
+
+          while (true) {
+            for (let i = 0; i < messages.length; i++) {
+              // reset classes
+              line.classList.remove("enter", "exit", "shimmer");
+              // force reflow to reset transitions
+              void line.offsetWidth;
+
+              line.textContent = messages[i];
+
+              // enter
+              line.classList.add("enter", "shimmer");
+              // visible duration
+              await sleep(3600);
+
+              // exit
+              line.classList.remove("enter");
+              line.classList.add("exit");
+              await sleep(800);
+
+              // prepare for next (remove exit so enter animation works next loop)
+              line.classList.remove("exit", "shimmer");
+              // tiny pause between messages
+              await sleep(200);
+            }
+
+            // optional longer pause after full cycle
+            await sleep(600);
+          }
+        }
+
+        // start without blocking render loop
+        window.requestAnimationFrame(() => {
+          runLoop().catch((e) => console.error(e));
+        });
+      })();
+    </script>
+  </body>
+</html>
